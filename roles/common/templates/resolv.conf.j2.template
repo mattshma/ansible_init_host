@@ -1,0 +1,10 @@
+{% if idc == 10 %}
+#10 master
+nameserver Master_DNS_IP
+#10 slave
+nameserver Slave_DNS_IP
+{% else %}
+nameserver 20_Master_DNS_IP
+{% endif %}
+
+search YOUR_DNS.com

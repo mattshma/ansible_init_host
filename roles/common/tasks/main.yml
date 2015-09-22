@@ -1,0 +1,92 @@
+---
+
+- name: modify ubuntu dns
+  template: src=resolv.conf.j2 dest=/etc/resolvconf/resolv.conf.d/base mode=0664 owner=root group=root
+  notify: update ubuntu resolvconf
+  when: ansible_distribution == 'Ubuntu'
+  tags:
+    - dns
+    - ubuntu
+
+- name: modify redhat dns
+  template: src=resolv.conf.j2 dest=/etc/resolv.conf mode=0664 owner=root group=root
+  when: ansible_distribution == 'RedHat'
+  tags:
+    - dns
+    - redhat
+
+- name: modifty apt source
+  copy: src=sources.list.d/base.list dest=/etc/apt/sources.list.d/
+  notify: update ubuntu repo
+  when: ansible_distribution == 'Ubuntu'
+  tags:
+    - repo
+    - ubuntu
+
+- name: add apt key
+  apt_key: url="http://mirrors.corp.anjuke.com/anjuke-ubuntu/public.key"
+  when: ansible_distribution == 'Ubuntu'
+  tags:
+    - repo
+    - ubuntu
+
+- name: modify redhat6 yum source
+  copy: src=yum.repos.d/rhel6.repo dest=/etc/yum.repos.d/ 
+  notify: update redhat repo
+  when: ansible_distribution == 'RedHat' and ansible_distribution_version == '6.4'
+  tags:
+    - repo
+    - redhat
+
+- name: modify redhat5 yum source
+  copy: src=yum.repos.d/rhel5.repo dest=/etc/yum.repos.d/ 
+  notify: update redhat repo
+  when: ansible_distribution == 'RedHat' and ansible_distribution_version == '5.5'  
+  tags: 
+    - repo
+    - redhat
+
+- name: Redhat install zabbix
+  yum: name=zabbix-agent-ops state=latest
+  when: ansible_distribution == 'RedHat'
+  tags:
+    - redhat
+
+- name: Ubuntu install zabbix
+  apt: name=zabbix-agent-ops state=latest update_cache=yes
+  when: ansible_distribution == 'Ubuntu'
+  tags:
+    - ubuntu
+
+- name: modify zabbix
+  template: src=zabbix_agentd.conf.j2 dest=/usr/local/zabbix-agent-ops/etc/zabbix_agentd.conf
+
+- name: add zabbix user
+  user: name=zabbix shell=/sbin/nologin home=/usr/local/zabbix-agent-ops/var
+
+- name: start zabbix agentd
+  command: /usr/local/zabbix-agent-ops/sbin/zabbix_agentd
+
+- name: modify ntp
+  cron: name="set ntp" minute="0" hour="*/5" job="/usr/sbin/ntpdate 10.10.6.130"
+
+- name: modify swappiness
+  lineinfile: dest=/etc/sysctl.conf regexp="^vm.swappiness" line="vm.swappiness=1"
+
+- name: modify common-session
+  copy: src=ulimit/common-session dest=/etc/pam.d/common-session
+
+- name: modify commom-session-noninteractive
+  copy: src=ulimit/common-session-noninteractive dest=/etc/pam.d/common-session-noninteractive
+
+- name: modify ulimits
+  copy: src=ulimit/common.conf dest=/etc/security/limits.d/common.conf
+
+- name: set file-max
+  lineinfile: dest=/etc/sysctl.conf regexp="^fs.file-max" line="fs.file-max=2097152"
+
+- name: set tcp_max_sys_backlog
+  lineinfile: dest=/etc/sysctl.conf regexp="^net.ipv4.tcp_max_syn_backlog" line="net.ipv4.tcp_max_syn_backlog=8192"
+
+- name: set somaxconn
+  lineinfile: dest=/etc/sysctl.conf regexp="^net.core.somaxconn" line="net.core.somaxconn=2048"

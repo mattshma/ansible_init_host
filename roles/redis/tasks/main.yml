@@ -1,0 +1,9 @@
+---
+
+- name: set overcommit
+  lineinfile: dest=/etc/sysctl.conf regexp="^vm.overcommit_memory" line="vm.overcommit_memory=1"
+
+- name: disable huge page
+  shell: echo never > /sys/kernel/mm/transparent_hugepage/enabled
+  when:  ansible_distribution == 'Ubuntu' or (ansible_distribution == 'RedHat' and ansible_distribution_version == '6.4')
+

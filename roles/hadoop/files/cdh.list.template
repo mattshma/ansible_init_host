@@ -1,0 +1,2 @@
+deb [arch=amd64] http://10.10.3.10/cm5/ubuntu/precise/amd64/cm/ precise-cm5.0.2 contrib
+deb [arch=amd64] http://10.20.3.10/cm4/ubuntu/precise/amd64/cm/ precise-cm4.8.0 contrib

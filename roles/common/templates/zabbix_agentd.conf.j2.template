@@ -1,0 +1,7 @@
+Server=Your_Zabbix_Sever_IP
+ServerActive=Your_Zabbix_Sever_IP
+PidFile=/usr/local/zabbix-agent-ops/var/zabbix_agentd.pid
+LogFile=/usr/local/zabbix-agent-ops/var/zabbix_agentd.log
+Include=/usr/local/zabbix-agent-ops/etc/extra.conf
+Include=/usr/local/zabbix-agent-ops/etc/zabbix_agentd.conf.d/
+

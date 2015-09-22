@@ -1,0 +1,4 @@
+[cdh_repo]
+name=chd_repo_$releasever 
+baseurl=http://10.10.3.10/cm4/redhat/$releasever/$basearch/4.8.0/
+gpgcheck=0

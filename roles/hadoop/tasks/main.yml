@@ -1,0 +1,51 @@
+---
+- name: stat /var/log
+  stat: path=/var/log
+  register: var_log_stat
+
+- name: rm old logs
+  command: mv /var/log /data/logs
+  when: var_log_stat.stat.islnk is defined and var_log_stat.stat.islnk == false and var_log_stat.stat.isdir == true
+
+- name: make symlink
+  file: src=/data/logs dest=/var/log state=link force=true
+  when: var_log_stat.stat.islnk is defined and var_log_stat.stat.islnk == false  and var_log_stat.stat.isdir == true
+
+- name: stat /opt
+  stat: path=/opt
+  register: opt_stat
+
+- name: make /opt
+  file: src=/data/opt state=directory
+  when: not opt_stat.stat.exists
+
+- name: mv opt to data
+  command: mv /opt /data/opt
+  when: opt_stat.stat.exists and opt_stat.stat.islnk == false and opt_stat.stat.isdir == true
+
+- name: make ln for opt
+  file: src=/data/opt dest=/opt state=link
+  when: (opt_stat.stat.exists and opt_stat.stat.islnk == false and opt_stat.stat.isdir == true) or (not opt_stat.stat.exists)
+
+#- name: add cdh apt-key
+#  apt_key: url=http://archive.cloudera.com/cdh4/ubuntu/precise/amd64/cdh/archive.key 
+#  apt_key: url=http://archive.cloudera.com/cdh5/debian/wheezy/amd64/cdh/archive.key 
+#  environment: proxy_env
+#  tags: repo
+
+- name: add cdh apt mirror
+  copy: src=cdh.list dest=/etc/apt/sources.list.d/
+  notify: update ubuntu repo
+  when: ansible_distribution == 'Ubuntu'
+  tags: repo
+
+- name: add cdh yum mirror
+  copy: src=cdh.repo dest=/etc/yum.repos.d/
+  notify: update redhat repo
+  when: ansible_distribution == 'RedHat'
+  tags: repo
+
+- name: set hosts
+  copy: src=hosts dest=/etc/hosts
+
+

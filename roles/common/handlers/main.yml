@@ -1,0 +1,9 @@
+---
+- name: update ubuntu repo
+  apt: update_cache=yes
+
+- name: update redhat repo 
+  yum: update_cache=yes
+
+- name: update ubuntu resolvconf
+  command: resolvconf -u
