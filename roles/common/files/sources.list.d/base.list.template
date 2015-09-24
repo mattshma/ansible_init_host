@@ -1,2 +1,2 @@
 ## you should rename the file name from base.list.template to base.list
-deb http://mirrors.your.com/ubuntu precise main restricted universe multiverse
+#deb http://YOUR_MIRRORS_ADDRESS/ubuntu precise main restricted universe multiverse

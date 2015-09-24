@@ -1,12 +1,12 @@
 ---
 
-# - name: add root key
-#   authorized_key: user=root key="{{ item }}"
-#   with_file:
-#     - public_keys/maple
-#     - public_keys/keithlan
-
-- name: add mysql key
-  authorized_key: user=mysql key="{{ item }}"
+- name: add root key
+  authorized_key: user=root key="{{ item }}"
   with_file:
-    - public_keys/mysql
+    - public_keys/mingma
+    - public_keys/keithlan
+
+#- name: add mysql key
+#  authorized_key: user=mysql key="{{ item }}"
+#  with_file:
+#    - public_keys/mysql

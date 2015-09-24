@@ -1,6 +1,5 @@
 ## you should renmae the file name from rhel.repo.template to some repo name
-[centos_base]
-name=CentOS-5.10 - Base
-baseurl=http://mirrors.your.com/centos/5.10/os/$basearch/
-gpgcheck=0
-
+#[centos_base]
+#name=CentOS-5.10 - Base
+#baseurl=http://YOUR_MIRRORS_ADDRESS/centos/5.10/os/$basearch/
+#gpgcheck=0

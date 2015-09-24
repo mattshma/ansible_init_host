@@ -1,0 +1,52 @@
+---
+
+- name: get /data
+  shell: df |awk '$6=="/data" {print $1}'
+  register: data_loc
+  tags:
+    - db
+
+- name: umount /data
+  mount: name=/data src={{ data_loc.stdout }} fstype=xfs state=unmounted
+  register: umount_result
+  tags:
+    - db
+
+- name: mkfs xfs
+  filesystem: fstype=xfs dev={{ data_loc.stdout }} force=yes opts="-f -d agcount=32 -l size=128m -L /data"
+  tags:
+    - db
+
+- name: get Redhat /data UUID
+  shell: blkid {{ data_loc.stdout }} |awk '{print $3}' |sed s#\"##g
+  register: data_uuid
+  when: ansible_distribution == 'RedHat'
+  tags:
+    - db
+
+- name: mount /data
+  mount: name=/data src={{ data_uuid.stdout }} fstype=xfs opts="noatime,nodiratime,osyncisdsync,inode64" state=mounted
+  when: ansible_distribution == 'RedHat'
+  tags:
+    - db
+
+- name: get Ubuntu /data UUID
+  shell: blkid {{ data_loc.stdout }} |awk '{print $2}' |sed s#\"##g
+  register: u_data_uuid
+  when: ansible_distribution == 'Ubuntu'
+  tags:
+    - db
+
+- name: mount /data
+  mount: name=/data src={{ u_data_uuid.stdout }} fstype=xfs opts="noatime,nodiratime,osyncisdsync,inode64" state=mounted
+  when: ansible_distribution == 'Ubuntu'
+  tags:
+    - db
+
+- name: get hadoop disk numble
+  shell: partition_hadoop_disk.sh
+  register: disk_num
+  tags:
+    - hadoop
+
+

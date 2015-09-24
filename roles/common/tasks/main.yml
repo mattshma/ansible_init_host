@@ -8,12 +8,12 @@
     - dns
     - ubuntu
 
-- name: modify redhat dns
-  template: src=resolv.conf.j2 dest=/etc/resolv.conf mode=0664 owner=root group=root
-  when: ansible_distribution == 'RedHat'
-  tags:
-    - dns
-    - redhat
+#- name: modify redhat dns
+#  template: src=resolv.conf.j2 dest=/etc/resolv.conf mode=0664 owner=root group=root
+#  when: ansible_distribution == 'RedHat'
+#  tags:
+#    - dns
+#    - redhat
 
 - name: modifty apt source
   copy: src=sources.list.d/base.list dest=/etc/apt/sources.list.d/
@@ -70,9 +70,6 @@
 - name: modify ntp
   cron: name="set ntp" minute="0" hour="*/5" job="/usr/sbin/ntpdate 10.10.6.130"
 
-- name: modify swappiness
-  lineinfile: dest=/etc/sysctl.conf regexp="^vm.swappiness" line="vm.swappiness=1"
-
 - name: modify common-session
   copy: src=ulimit/common-session dest=/etc/pam.d/common-session
 
@@ -82,11 +79,18 @@
 - name: modify ulimits
   copy: src=ulimit/common.conf dest=/etc/security/limits.d/common.conf
 
-- name: set file-max
-  lineinfile: dest=/etc/sysctl.conf regexp="^fs.file-max" line="fs.file-max=2097152"
+- name: modify swappiness
+  sysctl: name=vm.swappiness value=1 
+  tags: sysctl
 
-- name: set tcp_max_sys_backlog
-  lineinfile: dest=/etc/sysctl.conf regexp="^net.ipv4.tcp_max_syn_backlog" line="net.ipv4.tcp_max_syn_backlog=8192"
+- name: set file-max
+  sysctl: name=fs.file-max value=6549687 
+  tags: sysctl
+
+- name: set tcp_max_syn_backlog
+  sysctl: name=net.ipv4.tcp_max_syn_backlog value=8192
+  tags: sysctl
 
 - name: set somaxconn
-  lineinfile: dest=/etc/sysctl.conf regexp="^net.core.somaxconn" line="net.core.somaxconn=2048"
+  sysctl: name=net.core.somaxconn value=2048
+  tags: sysctl

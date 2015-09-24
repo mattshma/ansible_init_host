@@ -1,0 +1,27 @@
+---
+
+- name: disable numa
+  lineinfile: dest=/boot/grub/grub.conf backrefs=yes state=present regexp="(^\s*kernel\s+\/.*quiet$)" line="\1 numa=off"
+  when: ansible_distribution == 'RedHat'
+  tags:
+    - redhat
+
+#- name: ln /boot/grub/grub.conf
+#  file: src=/boot/grub/grub.conf path=/etc/grub.conf state=link 
+
+#- name: copy file
+#  copy: src=. dest=/root owner=root group=root
+
+
+######### Dangerous!!! ############
+#- name: restart machine
+#  command: reboot
+#  async: 0
+#  poll: 0
+#  ignore_errors: true
+
+#- name: waiting for server to come back
+#  local_action: wait_for host={{ inventory_hostname }} state=started delay=60
+
+##################################
+  

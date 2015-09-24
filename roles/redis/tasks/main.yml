@@ -7,3 +7,8 @@
   shell: echo never > /sys/kernel/mm/transparent_hugepage/enabled
   when:  ansible_distribution == 'Ubuntu' or (ansible_distribution == 'RedHat' and ansible_distribution_version == '6.4')
 
+# - name: get redis memory
+#   script: get_redis_mem.sh
+# 
+# - name: test redis memory
+#   redis: command=config login_host=10.249.13.64 login_port=6379
