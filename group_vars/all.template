@@ -1,5 +1,0 @@
----
-# you should rename the file name from all.template to all
-proxy_env:
-  http_proxy: http://proxy.your.company.com:3128
-  https_proxy: http://proxy.your.company.com:3128

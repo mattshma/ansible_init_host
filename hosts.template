@@ -1,13 +1,14 @@
-[mc]
-memcached-001
-
-[redis]
-10.10.3.11 ansible_ssh_user=redis
-
-[mysql]
-
-[hadoop]
-10.10.4.10
-10.10.4.11
-10.10.4.12
-10.10.4.13
+#[mc]
+#memcached-001
+#
+#[redis]
+#10.10.3.11 ansible_ssh_user=redis
+#
+#[mysql]
+#db-001
+#
+#[hadoop]
+#10.10.4.10
+#10.10.4.11
+#10.10.4.12
+#10.10.4.13
